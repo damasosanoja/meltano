@@ -1,6 +1,30 @@
 version: 1
 project_id: 2608c581-c27f-4181-a00c-2470b0bf0759
+plugins:
+  extractors:
+  - name: tap-gitlab
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-gitlab.git
+  loaders:
+  - name: target-postgres
+    variant: transferwise
+    pip_url: pipelinewise-target-postgres
 environments:
 - name: dev
+  config:
+    plugins:
+      extractors:
+      - name: tap-gitlab
+        config:
+          projects: meltano/meltano meltano/tap-gitlab
+          start_date: '2021-03-01T00:00:00Z'
+        select:
+        - tags.*
+      loaders:
+      - name: target-postgres
+        config:
+          user: meltano
+          dbname: warehouse
+          default_target_schema: public
 - name: staging
 - name: prod
